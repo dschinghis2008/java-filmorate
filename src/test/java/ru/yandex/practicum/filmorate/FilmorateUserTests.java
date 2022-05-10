@@ -29,6 +29,7 @@ class FilmorateUserTests {
         user.setLogin("user1");
         user.setEmail("user1@example");
 
+        userController.clearUsers();
         userController.createUser(user);
         Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - добавлен 1 юсер");
     }
@@ -85,15 +86,14 @@ class FilmorateUserTests {
         user.setEmail("user1@example");
 
         User userUpd = new User();
-        userUpd.setId(2);
+        userUpd.setId(1);
         userUpd.setBirthday(LocalDate.of(2002, 1, 1));
         userUpd.setName("UserNew");
         userUpd.setLogin("userNew");
         userUpd.setEmail("userNew@example");
 
+        userController.clearUsers();
         userController.createUser(user);
-        assertThrows(ValidateException.class, () -> userController.updateUser(userUpd));
-        userUpd.setId(1);
         userController.updateUser(userUpd);
         Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - обновлен 1 юсер");
     }

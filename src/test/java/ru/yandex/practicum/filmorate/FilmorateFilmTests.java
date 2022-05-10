@@ -99,16 +99,15 @@ public class FilmorateFilmTests {
         film.setDuration(Duration.ofHours(1));
 
         Film filmUpd = new Film();
-        filmUpd.setId(2);
+        filmUpd.setId(1);
         filmUpd.setName("Example2");
         filmUpd.setDescription("desc Example2");
         filmUpd.setReleaseDate(LocalDate.of(2002, 1, 1));
         filmUpd.setDuration(Duration.ofHours(1));
 
+        filmController.clearFilms();
         filmController.createFilm(film);
-        assertThrows(ValidateException.class, () -> filmController.updateFilm(filmUpd));
 
-        filmUpd.setId(1);
         filmController.updateFilm(filmUpd);
         Assertions.assertEquals(filmController.getCountFilms(), 1, "ожидается - обновлен 1 фильм");
     }

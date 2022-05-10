@@ -57,4 +57,7 @@ public class FilmController {
         return films.size();
     }
 
+    public void clearFilms(){
+        films.clear();
+    }
 }
