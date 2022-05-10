@@ -15,7 +15,7 @@ public class FilmController {
     private Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
-    public void createFilm(@RequestBody Film film) throws ValidateException {
+    public Film createFilm(@RequestBody Film film) throws ValidateException {
 
         if (film.getName().isBlank() || film.getName() == null) {
             throw new ValidateException("пустое наменование фильма");
@@ -23,6 +23,11 @@ public class FilmController {
         if (film.getDescription().length() > 200) {
             throw new ValidateException("размер описания превышает 200 символов");
         }
+
+        if (film.getDescription().isBlank() || film.getDescription() == null) {
+            throw new ValidateException("пустое описание");
+        }
+
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidateException("дата релиза неверна");
         }
@@ -31,13 +36,11 @@ public class FilmController {
         }
         films.put(film.getId(), film);
         log.debug("добавлен фильм: " + film.toString());
+        return film;
     }
 
     @PutMapping
     public void updateFilm(@RequestBody Film film) throws ValidateException {
-        if (!films.containsKey(film.getId())) {
-            throw new ValidateException("не найден фильм для обновления его данных");
-        }
         films.put(film.getId(), film);
         log.debug("обновлен фильм: " + film.toString());
     }
@@ -57,7 +60,7 @@ public class FilmController {
         return films.size();
     }
 
-    public void clearFilms(){
+    public void clearFilms() {
         films.clear();
     }
 }

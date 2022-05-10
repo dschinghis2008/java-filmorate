@@ -15,7 +15,7 @@ public class UserController {
     private Map<Integer, User> users = new HashMap<>();
 
     @PostMapping
-    public void createUser(@RequestBody User user) throws ValidateException {
+    public User createUser(@RequestBody User user) throws ValidateException {
         if (!user.getEmail().contains("@") || user.getEmail().isBlank() || user.getEmail() == null) {
             throw new ValidateException("неправильный формат email или пустой email");
         }
@@ -26,15 +26,12 @@ public class UserController {
             throw new ValidateException("дата рождения указывает на будущее время");
         }
         users.put(user.getId(), user);
-        System.out.println(user);
         log.debug("добавлен user: " + user.toString());
+        return user;
     }
 
     @PutMapping
     public void updateUser(@RequestBody User user) throws ValidateException {
-        if (!users.containsKey(user.getId())) {
-            throw new ValidateException("не найден пользователь для обновления его персональных данных");
-        }
         users.put(user.getId(), user);
         log.debug("обновлен user: " + user.toString());
     }
@@ -50,7 +47,7 @@ public class UserController {
                 result += " " + users.get(id).getName() + "\n";
             }
         }
-        log.debug("запрошены users: " + result);
+        log.debug("запрошены users: ");
         return result;
     }
 
@@ -58,7 +55,7 @@ public class UserController {
         return users.size();
     }
 
-    public void clearUsers(){
+    public void clearUsers() {
         users.clear();
     }
 }
