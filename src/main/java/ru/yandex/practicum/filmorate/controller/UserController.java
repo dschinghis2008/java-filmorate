@@ -26,14 +26,14 @@ public class UserController {
             throw new ValidateException("дата рождения указывает на будущее время");
         }
         users.put(user.getId(), user);
-        log.debug("добавлен user: " + user.toString());
+        log.debug("добавлен user: {}", user.toString());
         return user;
     }
 
     @PutMapping
     public void updateUser(@RequestBody User user) throws ValidateException {
         users.put(user.getId(), user);
-        log.debug("обновлен user: " + user.toString());
+        log.debug("обновлен user: {}", user.toString());
     }
 
     @GetMapping
@@ -47,7 +47,7 @@ public class UserController {
                 result += " " + users.get(id).getName() + "\n";
             }
         }
-        log.debug("запрошены users: ");
+        log.debug("запрошены users: {}", result);
         return result;
     }
 

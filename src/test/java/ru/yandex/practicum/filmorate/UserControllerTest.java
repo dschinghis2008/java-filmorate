@@ -17,13 +17,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 
-public class UserControllerTest1 { //example integration test
+public class UserControllerTest { //example integration test
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Test
     void createValidUser() throws Exception {
         User user1 = new User();

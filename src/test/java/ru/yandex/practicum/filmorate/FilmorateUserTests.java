@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class FilmorateUserTests {
 
     @Autowired
-    UserController userController;
+    private UserController userController;
 
 
     @Test

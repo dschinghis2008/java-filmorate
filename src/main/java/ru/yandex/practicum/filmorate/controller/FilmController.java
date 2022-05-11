@@ -12,6 +12,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+
+    LocalDate LOW_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+
     private Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
@@ -28,21 +31,21 @@ public class FilmController {
             throw new ValidateException("пустое описание");
         }
 
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate().isBefore(LOW_RELEASE_DATE)) {
             throw new ValidateException("дата релиза неверна");
         }
         if (film.getDuration().isNegative() || film.getDuration().isZero()) {
             throw new ValidateException("длительность фильма должна быть положительной");
         }
         films.put(film.getId(), film);
-        log.debug("добавлен фильм: " + film.toString());
+        log.debug("добавлен фильм: {}", film.toString());
         return film;
     }
 
     @PutMapping
     public void updateFilm(@RequestBody Film film) throws ValidateException {
         films.put(film.getId(), film);
-        log.debug("обновлен фильм: " + film.toString());
+        log.debug("обновлен фильм: {}", film.toString());
     }
 
     @GetMapping
@@ -52,7 +55,7 @@ public class FilmController {
             result += films.get(id).getName() + " " + films.get(id).getReleaseDate() + " " + films.get(id).getDuration()
                     + "\n";
         }
-        log.debug("запрошены фильмы: " + result);
+        log.debug("запрошены фильмы: {}", result);
         return result;
     }
 
