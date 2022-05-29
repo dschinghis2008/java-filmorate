@@ -23,7 +23,7 @@ class FilmorateUserTests {
     @Test
     public void userControllerValidEntityTest() throws ValidateException {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setBirthday(LocalDate.of(2000, 1, 1));
         user.setName("User1");
         user.setLogin("user1");
@@ -37,7 +37,7 @@ class FilmorateUserTests {
     @Test
     void userControllerInvalidEmailTest() {
         User user1 = new User();
-        user1.setId(1);
+        user1.setId(1L);
         user1.setBirthday(LocalDate.of(2000, 1, 1));
         user1.setName("User1");
         user1.setLogin("user1");
@@ -50,7 +50,7 @@ class FilmorateUserTests {
     @Test
     public void userControllerInvalidLoginTest() {
         User user = new User();
-        user.setId(2);
+        user.setId(2L);
         user.setBirthday(LocalDate.of(2000, 1, 1));
         user.setName("User2");
         user.setLogin("");
@@ -67,7 +67,7 @@ class FilmorateUserTests {
     @Test
     public void userControllerInvalidDateBirthTest() {
         User user = new User();
-        user.setId(2);
+        user.setId(2L);
         user.setBirthday(LocalDate.of(2030, 1, 1));
         user.setName("User2");
         user.setLogin("user2");
@@ -79,14 +79,14 @@ class FilmorateUserTests {
     @Test
     public void userControllerUpdateTest() throws ValidateException {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setBirthday(LocalDate.of(2000, 1, 1));
         user.setName("User1");
         user.setLogin("user1");
         user.setEmail("user1@example");
 
         User userUpd = new User();
-        userUpd.setId(1);
+        userUpd.setId(1L);
         userUpd.setBirthday(LocalDate.of(2002, 1, 1));
         userUpd.setName("UserNew");
         userUpd.setLogin("userNew");
@@ -101,14 +101,14 @@ class FilmorateUserTests {
     @Test
     public void userControllerGetTest() throws IOException, InterruptedException, ValidateException {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setBirthday(LocalDate.of(2000, 1, 1));
         user.setName("User1");
         user.setLogin("user1");
         user.setEmail("user1@example");
 
         User user2 = new User();
-        user2.setId(2);
+        user2.setId(2L);
         user2.setBirthday(LocalDate.of(2002, 1, 1));
         user2.setName("UserNew");
         user2.setLogin("userNew");
@@ -116,8 +116,7 @@ class FilmorateUserTests {
 
         userController.createUser(user);
         userController.createUser(user2);
-        String[] users = userController.getUsers().split("\n");
-        Assertions.assertEquals(users.length, 2, "ожидается - получили 2 юсера");
+        Assertions.assertEquals(userController.getUsers().size(), 2, "ожидается - получили 2 юсера");
     }
 
 

@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -105,7 +107,7 @@ public class FilmorateFilmTests {
         filmUpd.setReleaseDate(LocalDate.of(2002, 1, 1));
         filmUpd.setDuration(Duration.ofHours(1));
 
-        filmController.clearFilms();
+        filmController.deleteFilms();
         filmController.createFilm(film);
 
         filmController.updateFilm(filmUpd);
@@ -130,8 +132,8 @@ public class FilmorateFilmTests {
 
         filmController.createFilm(film);
         filmController.createFilm(film2);
-        String[] films = filmController.getFilms().split("\n");
+        Map<Integer,Film> films = filmController.getFilms();
 
-        Assertions.assertEquals(films.length, 2, "ожидается - получено 2 фильма");
+        Assertions.assertEquals(films.size(), 2, "ожидается - получено 2 фильма");
     }
 }
