@@ -27,7 +27,7 @@ public class UserControllerTest { //example integration test
     @Test
     void createValidUser() throws Exception {
         User user1 = new User();
-        user1.setId(1);
+        user1.setId(1L);
         user1.setBirthday(LocalDate.of(2000, 1, 1));
         user1.setName("User1");
         user1.setLogin("user1");
