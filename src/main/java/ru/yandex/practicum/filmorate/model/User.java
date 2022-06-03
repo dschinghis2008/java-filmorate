@@ -15,11 +15,11 @@ public class User {
     private LocalDate birthday;
     private final Set<Long> friends = new HashSet<>();
 
-    public void addFriend(Long id){
+    public void addFriend(Long id) {
         friends.add(id);
     }
 
-    public void removeFriend(Long id){
+    public void removeFriend(Long id) {
         friends.remove(id);
     }
 

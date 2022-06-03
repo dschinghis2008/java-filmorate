@@ -65,13 +65,13 @@ public class FilmController {
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.addLike(id, userId);
-        log.debug("лайкнут фильм {}", id, " юсером {}", userId);
+        log.debug("лайкнут фильм {}", id, " , пользователем {}", userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.removeLike(id, userId);
-        log.debug("отозван лайк фильма {}", id, " юсером {}", userId);
+        log.debug("отозван лайк фильма {}", id, " , пользователем {}", userId);
     }
 
     @GetMapping("/popular")

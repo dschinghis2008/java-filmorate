@@ -31,7 +31,7 @@ class FilmorateUserTests {
 
         userController.clearUsers();
         userController.createUser(user);
-        Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - добавлен 1 юсер");
+        Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - добавлен 1 пользователь");
     }
 
     @Test
@@ -95,7 +95,7 @@ class FilmorateUserTests {
         userController.clearUsers();
         userController.createUser(user);
         userController.updateUser(userUpd);
-        Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - обновлен 1 юсер");
+        Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - обновлен 1 пользователь");
     }
 
     @Test
@@ -116,7 +116,7 @@ class FilmorateUserTests {
 
         userController.createUser(user);
         userController.createUser(user2);
-        Assertions.assertEquals(userController.getUsers().size(), 2, "ожидается - получили 2 юсера");
+        Assertions.assertEquals(userController.getUsers().size(), 2, "ожидается - получили 2 пользователя");
     }
 
 

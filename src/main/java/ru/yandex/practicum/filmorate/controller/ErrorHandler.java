@@ -11,19 +11,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse incorrectParameter (final IncorrectParameterException e){
+    public ErrorResponse incorrectParameter(final IncorrectParameterException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse serverError (final Throwable e){
+    public ErrorResponse serverError(final Throwable e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse dataNotFound (final ValidateException e){
+    public ErrorResponse dataNotFound(final ValidateException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

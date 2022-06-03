@@ -15,15 +15,15 @@ public class Film {
     private Integer duration;
     private final Set<Long> likes = new HashSet<>();
 
-    public void addLike(Long idUser){
+    public void addLike(Long idUser) {
         likes.add(idUser);
     }
 
-    public void removeLike(Long idUser){
+    public void removeLike(Long idUser) {
         likes.remove(idUser);
     }
 
-    public int getCountLikes(){
+    public int getCountLikes() {
         return likes.size();
     }
 }

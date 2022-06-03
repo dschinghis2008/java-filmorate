@@ -28,7 +28,7 @@ public class FilmorateFilmTests {
         film.setName("Example");
         film.setDescription("desc Example");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
         filmController.createFilm(film);
 
         Assertions.assertEquals(filmController.getCountFilms(), 1, "ожидается - добавлен 1 фильм");
@@ -41,7 +41,7 @@ public class FilmorateFilmTests {
         film.setName("");
         film.setDescription("desc Example");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
 
         assertThrows(ValidateException.class, () -> filmController.createFilm(film));
         film.setName(null);
@@ -59,7 +59,7 @@ public class FilmorateFilmTests {
         }
         film.setDescription(s);
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
 
         assertThrows(ValidateException.class, () -> filmController.createFilm(film));
     }
@@ -71,7 +71,7 @@ public class FilmorateFilmTests {
         film.setName("film1");
         film.setDescription("film1");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
 
         assertThrows(ValidateException.class, () -> filmController.createFilm(film));
     }
@@ -83,10 +83,10 @@ public class FilmorateFilmTests {
         film.setName("film1");
         film.setDescription("film1");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        film.setDuration(Duration.ofHours(-1));
+        film.setDuration(100);
 
         assertThrows(ValidateException.class, () -> filmController.createFilm(film));
-        film.setDuration(Duration.ofHours(0));
+        film.setDuration(0);
         assertThrows(ValidateException.class, () -> filmController.createFilm(film));
     }
 
@@ -97,14 +97,14 @@ public class FilmorateFilmTests {
         film.setName("Example");
         film.setDescription("desc Example");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
 
         Film filmUpd = new Film();
         filmUpd.setId(1L);
         filmUpd.setName("Example2");
         filmUpd.setDescription("desc Example2");
         filmUpd.setReleaseDate(LocalDate.of(2002, 1, 1));
-        filmUpd.setDuration(Duration.ofHours(1));
+        filmUpd.setDuration(100);
 
         filmController.deleteFilms();
         filmController.createFilm(film);
@@ -120,14 +120,14 @@ public class FilmorateFilmTests {
         film.setName("Example");
         film.setDescription("desc Example");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
-        film.setDuration(Duration.ofHours(1));
+        film.setDuration(100);
 
         Film film2 = new Film();
         film2.setId(2L);
         film2.setName("Example2");
         film2.setDescription("desc Example2");
         film2.setReleaseDate(LocalDate.of(2002, 1, 1));
-        film2.setDuration(Duration.ofHours(1));
+        film2.setDuration(100);
 
         filmController.createFilm(film);
         filmController.createFilm(film2);

@@ -24,6 +24,7 @@ public class UserControllerTest { //example integration test
 
     @Autowired
     private MockMvc mockMvc;
+
     @Test
     void createValidUser() throws Exception {
         User user1 = new User();
