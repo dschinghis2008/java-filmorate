@@ -22,26 +22,18 @@ class FilmorateUserTests {
 
     @Test
     public void userControllerValidEntityTest() throws ValidateException {
-        User user = new User();
-        user.setId(1L);
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-        user.setName("User1");
-        user.setLogin("user1");
-        user.setEmail("user1@example");
+        User user = new User(1L,"user1@example","User1"
+                ,"user1",LocalDate.of(2000, 1, 1));
 
-        userController.clearUsers();
         userController.createUser(user);
         Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - добавлен 1 пользователь");
     }
 
     @Test
     void userControllerInvalidEmailTest() {
-        User user1 = new User();
-        user1.setId(1L);
-        user1.setBirthday(LocalDate.of(2000, 1, 1));
-        user1.setName("User1");
-        user1.setLogin("user1");
-        user1.setEmail("user1.example");
+        User user1 = new User(1L,"user1.example","User1"
+                ,"user1",LocalDate.of(2000, 1, 1));
+
 
         assertThrows(ValidateException.class, () -> userController.createUser(user1));
 
@@ -49,12 +41,9 @@ class FilmorateUserTests {
 
     @Test
     public void userControllerInvalidLoginTest() {
-        User user = new User();
-        user.setId(2L);
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-        user.setName("User2");
-        user.setLogin("");
-        user.setEmail("user2@example");
+        User user = new User(2L,"user2@example","User2"
+                ,"",LocalDate.of(2000, 1, 1));
+
 
         assertThrows(ValidateException.class, () -> userController.createUser(user));
         user.setLogin(null);
@@ -66,7 +55,8 @@ class FilmorateUserTests {
 
     @Test
     public void userControllerInvalidDateBirthTest() {
-        User user = new User();
+        User user = new User(2L,"user2@example","User2"
+                ,"user2",LocalDate.of(2030, 1, 1));
         user.setId(2L);
         user.setBirthday(LocalDate.of(2030, 1, 1));
         user.setName("User2");
@@ -78,21 +68,12 @@ class FilmorateUserTests {
 
     @Test
     public void userControllerUpdateTest() throws ValidateException {
-        User user = new User();
-        user.setId(1L);
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-        user.setName("User1");
-        user.setLogin("user1");
-        user.setEmail("user1@example");
+        User user = new User(1L,"user1@example","User1"
+                ,"user1",LocalDate.of(2000, 1, 1));
 
-        User userUpd = new User();
-        userUpd.setId(1L);
-        userUpd.setBirthday(LocalDate.of(2002, 1, 1));
-        userUpd.setName("UserNew");
-        userUpd.setLogin("userNew");
-        userUpd.setEmail("userNew@example");
+        User userUpd = new User(1L,"userNew@example","UserNew"
+                ,"userNew",LocalDate.of(2002, 1, 1));
 
-        userController.clearUsers();
         userController.createUser(user);
         userController.updateUser(userUpd);
         Assertions.assertEquals(userController.getCountUsers(), 1, "ожидается - обновлен 1 пользователь");
@@ -100,19 +81,11 @@ class FilmorateUserTests {
 
     @Test
     public void userControllerGetTest() throws IOException, InterruptedException, ValidateException {
-        User user = new User();
-        user.setId(1L);
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-        user.setName("User1");
-        user.setLogin("user1");
-        user.setEmail("user1@example");
+        User user = new User(1L,"user1@example","User1"
+                ,"user1",LocalDate.of(2000, 1, 1));
 
-        User user2 = new User();
-        user2.setId(2L);
-        user2.setBirthday(LocalDate.of(2002, 1, 1));
-        user2.setName("UserNew");
-        user2.setLogin("userNew");
-        user2.setEmail("userNew@example");
+        User user2 = new User(2L,"userNew@example","UserNew"
+                ,"userNew",LocalDate.of(2002, 1, 1));
 
         userController.createUser(user);
         userController.createUser(user2);

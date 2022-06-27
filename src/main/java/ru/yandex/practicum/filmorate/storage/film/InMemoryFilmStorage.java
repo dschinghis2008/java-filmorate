@@ -5,10 +5,7 @@ import ru.yandex.practicum.filmorate.controller.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -22,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film createFilm(Film film) {
+    public Optional<Film> createFilm(Film film) {
         try {
             if (film.getName().isBlank() || film.getName() == null) {
                 throw new ValidateException("пустое наменование фильма");
@@ -46,16 +43,16 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         film.setId(getNewId());
         films.put(film.getId(), film);
-        return film;
+        return Optional.of(film);
     }
 
     @Override
-    public Film updateFilm(Film film) {
+    public Optional<Film> updateFilm(Film film) {
         if (film.getId() <= 0) {
             throw new ValidateException("id должен быть > 0");
         }
         films.put(film.getId(), film);
-        return film;
+        return Optional.of(film);
     }
 
     @Override
@@ -68,10 +65,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film deleteFilm(Long id) {
+    public void deleteFilm(Long id) {
         Film film = films.get(id);
         films.remove(id);
-        return film;
     }
 
     @Override
@@ -80,11 +76,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(Long id) {
+    public Optional<Film> getById(Long id) {
         if (films.get(id) == null) {
             throw new ValidateException("film not found");
         }
-        return films.get(id);
+        return Optional.of(films.get(id));
     }
 
+    @Override
+    public void addLike(Long idUser, Long idFilm) {
+
+    }
+
+    @Override
+    public void removeLike(Long idUser, Long idFilm) {
+
+    }
+
+    @Override
+    public List<Optional<Film>> getOrderRate() {
+        return null;
+    }
 }

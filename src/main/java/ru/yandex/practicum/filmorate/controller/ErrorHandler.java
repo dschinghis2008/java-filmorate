@@ -23,7 +23,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse dataNotFound(final ValidateException e) {
+    public ErrorResponse dataNotFound(final NotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

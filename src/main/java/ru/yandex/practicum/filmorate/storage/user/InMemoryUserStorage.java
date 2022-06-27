@@ -5,10 +5,7 @@ import ru.yandex.practicum.filmorate.controller.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -19,7 +16,7 @@ public class InMemoryUserStorage implements UserStorage {
         return newId++;
     }
 
-    public User createUser(User user) {
+    public Optional<User> createUser(User user) {
         try {
             if (user.getName().equals("") || user.getName() == null) {
                 user.setName(user.getLogin());
@@ -39,15 +36,15 @@ public class InMemoryUserStorage implements UserStorage {
         }
         user.setId(getNewId());
         users.put(user.getId(), user);
-        return user;
+        return Optional.of(user);
     }
 
-    public User updateUser(User user) {
+    public Optional<User> updateUser(User user) {
         if (user.getId() <= 0 || user.getId() == null) {
             throw new ValidateException("id должен быть > 0");
         }
         users.put(user.getId(), user);
-        return user;
+        return Optional.of(user);
     }
 
     public List<User> getAll() {
@@ -58,7 +55,8 @@ public class InMemoryUserStorage implements UserStorage {
         return list;
     }
 
-    public void deleteUser(int id) {
+    @Override
+    public void deleteUser(Long id) {
         users.remove(id);
     }
 
@@ -66,10 +64,32 @@ public class InMemoryUserStorage implements UserStorage {
         users.clear();
     }
 
-    public User getById(Long id) {
+    public Optional<User> getById(Long id) {
         if (users.get(id) == null) {
             throw new ValidateException("user not found");
         }
-        return users.get(id);
+        return Optional.of(users.get(id));
     }
+    public void  addFriend(Long id,Long idFriend){}
+
+    @Override
+    public void deleteFriend(Long id, Long idFriend) {
+
+    }
+
+    @Override
+    public List<User> getFriends(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long id, Long idFriend) {
+        return null;
+    }
+
+    public void deleteFriend(Long id){}
+
+    public List<User> getFriends(){return null;}
+
+    public List<User> getCommonFriends(){return null;}
 }

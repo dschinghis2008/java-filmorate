@@ -1,65 +1,66 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-    private final FilmStorage inMemoryFilmStorage;
+    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
-    public FilmController(FilmStorage inMemoryFilmStorage, FilmService filmService) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
+    public FilmController(@Qualifier("dbFilmStorage") FilmStorage filmStorage, FilmService filmService) {
+        this.filmStorage = filmStorage;
         this.filmService = filmService;
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) throws ValidateException {
-        inMemoryFilmStorage.createFilm(film);
+        filmStorage.createFilm(film);
         log.debug("добавлен фильм: {}", film.toString());
         return film;
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) throws ValidateException {
+    public Optional<Film> updateFilm(@RequestBody Film film) throws ValidateException {
         log.debug("обновлен фильм: {}", film.toString());
-        return inMemoryFilmStorage.updateFilm(film);
+        return filmStorage.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getFilms() {
         log.debug("запрошены все фильмы");
-        return inMemoryFilmStorage.getAll();
+        return filmStorage.getAll();
     }
 
     public int getCountFilms() {
-        return inMemoryFilmStorage.getAll().size();
+        return filmStorage.getAll().size();
     }
 
     @DeleteMapping
     public void deleteFilms() {
-        inMemoryFilmStorage.deleteAll();
+        filmStorage.deleteAll();
         log.debug("удалены все фильмы");
     }
 
     @DeleteMapping("/{id}")
-    public Film deleteFilm(@PathVariable Long id) {
-        Film film = inMemoryFilmStorage.deleteFilm(id);
+    public void deleteFilm(@PathVariable Long id) {
+       filmStorage.deleteFilm(id);
         log.debug("удален фильм {}", id);
-        return film;
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable Long id) {
+    public Optional<Film> getFilm(@PathVariable Long id) {
         log.debug("запрошен фильм {}", id);
-        return inMemoryFilmStorage.getById(id);
+        return filmStorage.getById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -75,7 +76,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "0") Long count) {
+    public List<Optional<Film>> getPopularFilms(@RequestParam(defaultValue = "0") Long count) {
         log.debug("запрошены популярные фильмы в количестве {}", ((count == 0) || (count == null) ? 10 : count));
         return filmService.getMaxRating(count);
     }

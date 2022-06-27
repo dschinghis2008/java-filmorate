@@ -15,12 +15,24 @@ public class User {
     private LocalDate birthday;
     private final Set<Long> friends = new HashSet<>();
 
+    public User(Long id, String email, String name, String login, LocalDate birthday) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.login = login;
+        this.birthday = birthday;
+    }
+
     public void addFriend(Long id) {
         friends.add(id);
     }
 
     public void removeFriend(Long id) {
         friends.remove(id);
+    }
+
+    public Set<Long> getFriends(){
+        return friends;
     }
 
 }
