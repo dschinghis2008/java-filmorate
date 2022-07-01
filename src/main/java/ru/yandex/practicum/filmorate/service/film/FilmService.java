@@ -22,8 +22,8 @@ public class FilmService {
 
     public void addLike(Long idFilm, Long idUser) {
         if (filmStorage.getById(idFilm) != null && userStorage.getById(idUser) != null
-        && idFilm > 0 && idUser > 0) {
-            filmStorage.addLike(idUser,idFilm);
+                && idFilm > 0 && idUser > 0) {
+            filmStorage.addLike(idUser, idFilm);
         } else {
             throw new NotFoundException("user id=" + idUser + " or film id=" + idFilm + " не найдены");
         }
@@ -32,28 +32,19 @@ public class FilmService {
 
     public void removeLike(Long idFilm, Long idUser) {
         if (filmStorage.getById(idFilm) != null && userStorage.getById(idUser) != null) {
-            filmStorage.removeLike(idUser,idFilm);
+            filmStorage.removeLike(idUser, idFilm);
         } else {
             throw new ValidateException("user id=" + idUser + " or film id=" + idFilm + " не найдены");
         }
 
     }
 
-    public List<Optional<Film>> getMaxRating(Long countRate) {
-        Long count = countRate;
+    public List<Optional<Film>> getMaxRating(Integer countRate) {
+        Integer count = countRate;
         if (count == 0 || count == null) {
-            count = 10L;
+            count = 10;
         }
-
-        List<Optional<Film>> listOrder = filmStorage.getOrderRate();
-        if(listOrder.size() < count){
-            count = Long.valueOf(listOrder.size());
-        }
-        List<Optional<Film>> list = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            list.add(listOrder.get(i));
-        }
-
-        return list;
+        List<Optional<Film>> listOrder = filmStorage.getOrderRate(count);
+        return listOrder;
     }
 }

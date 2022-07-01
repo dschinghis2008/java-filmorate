@@ -14,27 +14,27 @@ import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-    @AutoConfigureTestDatabase
-    @RequiredArgsConstructor(onConstructor_ = @Autowired)
-    class FilmoRateApplicationTests {
-        private final DbUserStorage userStorage;
+@AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+class FilmoRateApplicationTests {
+    private final DbUserStorage userStorage;
 
-        @Test
-        public void testFindUserById() {
+    @Test
+    public void testFindUserById() {
 
-            Optional<User> userOptional = userStorage.getById(1L);
+        Optional<User> userOptional = userStorage.getById(1L);
 
-            assertThat(userOptional)
-                    .isPresent()
-                    .hasValueSatisfying(user ->
-                            assertThat(user).hasFieldOrPropertyWithValue("id", 1L)
-                    );
-        }
-
-        @Test
-        public void testGetAllUsers(){
-            List<User> users = userStorage.getAll();
-            assertThat(users.size())
-                    .isEqualTo(3);
-        }
+        assertThat(userOptional)
+                .isPresent()
+                .hasValueSatisfying(user ->
+                        assertThat(user).hasFieldOrPropertyWithValue("id", 1L)
+                );
     }
+
+    @Test
+    public void testGetAllUsers() {
+        List<User> users = userStorage.getAll();
+        assertThat(users.size())
+                .isEqualTo(3);
+    }
+}

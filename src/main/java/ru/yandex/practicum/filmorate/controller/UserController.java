@@ -61,7 +61,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userStorage.deleteUser(id);
-        log.info("Удален пользователь {}",id);
+        log.info("Удален пользователь {}", id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")

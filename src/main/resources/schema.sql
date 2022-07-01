@@ -1,4 +1,4 @@
---DROP TABLE FILMS, FILM_GENRE_LINK, FRIENDS, GENRES, RATING, MPA_RATING, USERS;
+DROP TABLE FILMS, FILM_GENRE_LINK, FRIENDS, GENRES, RATING, MPA_RATING, USERS;
 
 create table if not exists USERS
 (
@@ -27,7 +27,7 @@ create table if not exists films
     releasedate date,
     duration int,
 	rate long,
-    mpa long references mpa_rating(id_rate),
+    mpa long references mpa_rating(id_rate) on delete cascade ,
     constraint FILMS_PK
         primary key (id_film)
 );
@@ -43,7 +43,7 @@ create table if not exists genres
 create table if not exists film_genre_link
 (
     id_genre      long not null references GENRES(ID_GENRE),
-    id_film       long not null references films(id_film),
+    id_film       long not null references films(id_film) on delete cascade,
     constraint FILM_GENRE_LINK_PK
         primary key (id_film,id_genre)
 );
@@ -60,8 +60,8 @@ create table if not exists rating
 
 create table if not exists friends
 (
-    id_user long,
-    id_friend long references USERS(ID_USER),
+    id_user long references USERS(ID_USER),
+    id_friend long ,
     status int,
     constraint FRIENDS_PK
         primary key (id_user,id_friend)

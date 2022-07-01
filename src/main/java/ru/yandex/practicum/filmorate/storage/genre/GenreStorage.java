@@ -18,12 +18,12 @@ public class GenreStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<Genre> getById(Long id){
-        if(id == null || id <= 0){
+    public Optional<Genre> getById(Long id) {
+        if (id == null || id <= 0) {
             throw new NotFoundException("unknown genre");
         }
-        SqlRowSet genreRow = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES WHERE ID_GENRE=?",id);
-        if(genreRow.next()){
+        SqlRowSet genreRow = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES WHERE ID_GENRE=?", id);
+        if (genreRow.next()) {
             Genre genre = new Genre(
                     genreRow.getLong("id_genre"),
                     genreRow.getString("name")
@@ -34,15 +34,15 @@ public class GenreStorage {
         }
     }
 
-    public List<Optional<Genre>> getAll(){
+    public List<Optional<Genre>> getAll() {
         List<Optional<Genre>> list = new ArrayList<>();
         SqlRowSet genreRow = jdbcTemplate.queryForRowSet("SELECT * FROM GENRES");
-        while(genreRow.next()){
+        while (genreRow.next()) {
             Genre genre = new Genre(
                     genreRow.getLong("id_genre"),
                     genreRow.getString("name")
             );
-             list.add(Optional.of(genre));
+            list.add(Optional.of(genre));
         }
         return list;
     }

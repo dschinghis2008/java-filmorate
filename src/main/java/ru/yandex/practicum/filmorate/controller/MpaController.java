@@ -22,13 +22,13 @@ public class MpaController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Mpa> getById(@PathVariable Long id){
-        log.info("запрошен mpa id={}",id);
+    public Optional<Mpa> getById(@PathVariable Long id) {
+        log.info("запрошен mpa id={}", id);
         return mpaStorage.getById(id);
     }
 
     @GetMapping
-    public List<Optional<Mpa>> getAll(){
+    public List<Optional<Mpa>> getAll() {
         log.info("запрошены все mpa");
         return mpaStorage.getAll();
     }

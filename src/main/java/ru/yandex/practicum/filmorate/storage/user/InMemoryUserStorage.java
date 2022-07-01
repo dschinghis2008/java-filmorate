@@ -70,7 +70,9 @@ public class InMemoryUserStorage implements UserStorage {
         }
         return Optional.of(users.get(id));
     }
-    public void  addFriend(Long id,Long idFriend){}
+
+    public void addFriend(Long id, Long idFriend) {
+    }
 
     @Override
     public void deleteFriend(Long id, Long idFriend) {
@@ -87,9 +89,14 @@ public class InMemoryUserStorage implements UserStorage {
         return null;
     }
 
-    public void deleteFriend(Long id){}
+    public void deleteFriend(Long id) {
+    }
 
-    public List<User> getFriends(){return null;}
+    public List<User> getFriends() {
+        return null;
+    }
 
-    public List<User> getCommonFriends(){return null;}
+    public List<User> getCommonFriends() {
+        return null;
+    }
 }

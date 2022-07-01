@@ -18,12 +18,12 @@ public class MpaStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<Mpa> getById(Long id){
-        if(id == null || id <= 0){
+    public Optional<Mpa> getById(Long id) {
+        if (id == null || id <= 0) {
             throw new NotFoundException("unknown MPA");
         }
-        SqlRowSet MpaRow = jdbcTemplate.queryForRowSet("SELECT * FROM MPA_RATING WHERE ID_RATE=?",id);
-        if(MpaRow.next()){
+        SqlRowSet MpaRow = jdbcTemplate.queryForRowSet("SELECT * FROM MPA_RATING WHERE ID_RATE=?", id);
+        if (MpaRow.next()) {
             Mpa mpa = new Mpa(
                     MpaRow.getLong("id_rate"),
                     MpaRow.getString("name")
@@ -34,10 +34,10 @@ public class MpaStorage {
         }
     }
 
-    public List<Optional<Mpa>> getAll(){
+    public List<Optional<Mpa>> getAll() {
         List<Optional<Mpa>> list = new ArrayList<>();
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet("SELECT * FROM MPA_RATING");
-        while(mpaRow.next()){
+        while (mpaRow.next()) {
             Mpa mpa = new Mpa(
                     mpaRow.getLong("id_rate"),
                     mpaRow.getString("name")

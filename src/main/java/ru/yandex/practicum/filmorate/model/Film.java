@@ -3,7 +3,10 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -13,18 +16,16 @@ public class Film {
     private LocalDate releaseDate;
     private Integer duration;
     private Long rate;
-    private final Mpa mpa;
-    private List<Genre> genres;
+    private Mpa mpa;
+    private HashSet<Genre> genres;
 
-    public Film(Long id, String name, String description, LocalDate releaseDate, Integer duration, Long rate, Mpa mpa,List<Genre> genres) {
+    public Film(Long id, String name, String description, LocalDate releaseDate, Integer duration, Long rate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.rate = rate;
-        this.mpa = mpa;
-        this.genres = genres;
     }
 
 

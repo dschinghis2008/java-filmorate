@@ -18,9 +18,9 @@ public interface FilmStorage {
 
     Optional<Film> getById(Long id);
 
-    void addLike(Long idUser,Long idFilm);
+    void addLike(Long idUser, Long idFilm);
 
-    void removeLike(Long idUser,Long idFilm);
+    void removeLike(Long idUser, Long idFilm);
 
-    List<Optional<Film>> getOrderRate();
+    List<Optional<Film>> getOrderRate(Integer limit);
 }

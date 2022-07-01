@@ -22,13 +22,13 @@ public class GenreController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Genre> getById(@PathVariable Long id){
-        log.info("запрошен жанр id={}",id);
+    public Optional<Genre> getById(@PathVariable Long id) {
+        log.info("запрошен жанр id={}", id);
         return genreStorage.getById(id);
     }
 
     @GetMapping
-    public List<Optional<Genre>> getAll(){
+    public List<Optional<Genre>> getAll() {
         log.info("запрошены все жанры");
         return genreStorage.getAll();
     }

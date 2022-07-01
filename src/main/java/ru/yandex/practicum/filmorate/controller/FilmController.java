@@ -25,19 +25,19 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@RequestBody Film film) throws ValidateException {
         filmStorage.createFilm(film);
-        log.debug("добавлен фильм: {}", film.toString());
+        log.info("добавлен фильм: {}", film.toString());
         return film;
     }
 
     @PutMapping
     public Optional<Film> updateFilm(@RequestBody Film film) throws ValidateException {
-        log.debug("обновлен фильм: {}", film.toString());
+        log.info("обновлен фильм: {}", film.toString());
         return filmStorage.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getFilms() {
-        log.debug("запрошены все фильмы");
+        log.info("запрошены все фильмы");
         return filmStorage.getAll();
     }
 
@@ -48,36 +48,36 @@ public class FilmController {
     @DeleteMapping
     public void deleteFilms() {
         filmStorage.deleteAll();
-        log.debug("удалены все фильмы");
+        log.info("удалены все фильмы");
     }
 
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable Long id) {
-       filmStorage.deleteFilm(id);
-        log.debug("удален фильм {}", id);
+        filmStorage.deleteFilm(id);
+        log.info("удален фильм {}", id);
     }
 
     @GetMapping("/{id}")
     public Optional<Film> getFilm(@PathVariable Long id) {
-        log.debug("запрошен фильм {}", id);
+        log.info("запрошен фильм {}", id);
         return filmStorage.getById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.addLike(id, userId);
-        log.debug("лайкнут фильм {}", id, " , пользователем {}", userId);
+        log.info("лайкнут фильм {}", id, " , пользователем {}", userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void removeLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.removeLike(id, userId);
-        log.debug("отозван лайк фильма {}", id, " , пользователем {}", userId);
+        log.info("отозван лайк фильма {}", id, " , пользователем {}", userId);
     }
 
     @GetMapping("/popular")
-    public List<Optional<Film>> getPopularFilms(@RequestParam(defaultValue = "0") Long count) {
-        log.debug("запрошены популярные фильмы в количестве {}", ((count == 0) || (count == null) ? 10 : count));
+    public List<Optional<Film>> getPopularFilms(@RequestParam(defaultValue = "0") Integer count) {
+        log.info("запрошены популярные фильмы в количестве {}", ((count == 0) || (count == null) ? 10 : count));
         return filmService.getMaxRating(count);
     }
 

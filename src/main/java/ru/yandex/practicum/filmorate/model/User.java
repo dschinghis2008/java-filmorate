@@ -31,7 +31,7 @@ public class User {
         friends.remove(id);
     }
 
-    public Set<Long> getFriends(){
+    public Set<Long> getFriends() {
         return friends;
     }
 

@@ -94,7 +94,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Optional<Film>> getOrderRate() {
+    public List<Optional<Film>> getOrderRate(Integer limit) {
         return null;
     }
 }
