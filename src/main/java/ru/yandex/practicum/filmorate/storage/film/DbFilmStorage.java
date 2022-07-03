@@ -56,8 +56,10 @@ public class DbFilmStorage implements FilmStorage {
             film.getMpa().setName(mpaRow.getString("name"));
             film.setId(mpaRow.getLong("id_film"));
         }
+        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+        jdbcTemplate.update(sql, film.getId());
         try {
-            if (film.getGenres() != null || !film.getGenres().isEmpty()) {
+            if (film.getGenres() != null && !film.getGenres().isEmpty()) {
                 for (Genre genre : film.getGenres()) {
                     sql = "INSERT INTO FILM_GENRE_LINK(ID_GENRE, ID_FILM) VALUES ( ?,? )";
                     jdbcTemplate.update(sql, genre.getId(), film.getId());
@@ -75,14 +77,19 @@ public class DbFilmStorage implements FilmStorage {
         if (film.getId() <= 0 || film.getId() == null) {
             throw new NotFoundException("id должен быть > 0");
         }
+        if(getById(film.getId()) == null){
+            throw new NotFoundException("фильм для update не найден");
+        }
         String sql = "UPDATE films SET name=?,description=?,releasedate=?,duration=?,rate=?,mpa=? WHERE id_film=?";
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
                 , film.getRate(), film.getMpa().getId(), film.getId());
         film.setMpa(getMpa(film.getMpa().getId()));
+        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+        jdbcTemplate.update(sql, film.getId());
+        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+        jdbcTemplate.update(sql, film.getId());
         try {
-            if (film.getGenres().size() > 0) {
-                sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-                jdbcTemplate.update(sql, film.getId());
+            if (film.getGenres() != null && !film.getGenres().isEmpty()) {
                 for (Genre genre : film.getGenres()) {
                     sql = "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
                     jdbcTemplate.update(sql, film.getId(), genre.getId());
@@ -90,7 +97,6 @@ public class DbFilmStorage implements FilmStorage {
                 film.setGenres(getGenres(film));
             }
         } catch (RuntimeException e) {
-
         }
 
         return Optional.of(film);
@@ -204,16 +210,17 @@ public class DbFilmStorage implements FilmStorage {
         }
     }
 
-    public HashSet<Genre> getGenres(Film film) {
-        HashSet<Genre> genres = new HashSet<>();
+    public TreeSet<Genre> getGenres(Film film) {
+        ArrayList<Genre> list = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
-                "SELECT * FROM GENRES g LEFT JOIN FILM_GENRE_LINK fgl on g.ID_GENRE = fgl.ID_GENRE WHERE fgl.ID_FILM=?"
+                "SELECT * FROM GENRES g JOIN FILM_GENRE_LINK fgl on g.ID_GENRE = fgl.ID_GENRE"
+                + " WHERE fgl.ID_FILM=? ORDER BY fgl.ID_GENRE"
                 , film.getId());
         while (rows.next()) {
-            genres.add(new Genre(rows.getLong("id_genre"), rows.getString("name")));
+            list.add(new Genre(rows.getLong("id_genre"), rows.getString("name")));
         }
-        if (genres.size() > 0) {
-            return genres;
+        if (list.size() > 0) {
+            return new TreeSet<>(list);
         } else {
             return null;
         }

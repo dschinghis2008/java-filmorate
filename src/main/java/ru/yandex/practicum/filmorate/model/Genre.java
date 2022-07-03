@@ -1,6 +1,9 @@
 package ru.yandex.practicum.filmorate.model;
 
-public class Genre {
+import lombok.Data;
+
+@Data
+public class Genre implements Comparable<Genre>{
     private Long id;
     private String name;
 
@@ -23,5 +26,10 @@ public class Genre {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int compareTo(Genre o) {
+        return (int) (this.getId() - o.getId());
     }
 }
