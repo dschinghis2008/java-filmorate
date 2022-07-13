@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.DbUserStorage;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,9 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testFindUserById() {
-
+        User user1 = new User(1L, "user1@example", "User1"
+                , "user1", LocalDate.of(2000, 1, 1));
+        userStorage.createUser(user1);
         Optional<User> userOptional = userStorage.getById(1L);
 
         assertThat(userOptional)
@@ -33,8 +36,15 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testGetAllUsers() {
+        User user1 = new User(1L, "user1@example", "User1"
+                , "user1", LocalDate.of(2000, 1, 1));
+        User user2 = new User(2L, "user2@example", "User2"
+                , "user2", LocalDate.of(2000, 2, 1));
+        userStorage.createUser(user1);
+        userStorage.createUser(user2);
+
         List<User> users = userStorage.getAll();
         assertThat(users.size())
-                .isEqualTo(3);
+                .isEqualTo(2);
     }
 }
