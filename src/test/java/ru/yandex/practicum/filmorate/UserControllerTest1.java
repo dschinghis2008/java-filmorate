@@ -30,12 +30,7 @@ public class UserControllerTest1 { //example integration test
     MockMvc mockMvc;
     @Test
     void createValidUser() throws Exception {
-        User user1 = new User();
-        user1.setId(1);
-        user1.setBirthday(LocalDate.of(2000, 1, 1));
-        user1.setName("User1");
-        user1.setLogin("user1");
-        user1.setEmail("user1@example");
+        User user1 = new User(1L,"user1@example","User1","user1",LocalDate.of(2000, 1, 1));
         String body = mapper.writeValueAsString(user1);
         this.mockMvc.perform(post("/users").content(body).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
