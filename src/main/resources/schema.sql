@@ -60,7 +60,7 @@ create table if not exists rating
 
 create table if not exists friends
 (
-    id_user long references USERS(ID_USER),
+    id_user long references USERS(ID_USER) on delete cascade ,
     id_friend long ,
     status int,
     constraint FRIENDS_PK
