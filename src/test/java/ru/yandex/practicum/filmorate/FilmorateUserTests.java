@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,11 @@ class FilmorateUserTests {
     @Autowired
     private UserController userController;
 
+    @BeforeEach
+    public void clearDB(){
+        userController.deleteUsers();
+    }
+
 
     @Test
     public void userControllerValidEntityTest() throws ValidateException {
@@ -31,11 +37,12 @@ class FilmorateUserTests {
 
     @Test
     void userControllerInvalidEmailTest() {
+
         User user1 = new User(1L, "user1.example", "User1"
                 , "user1", LocalDate.of(2000, 1, 1));
 
 
-        assertThrows(ValidateException.class, () -> userController.createUser(user1));
+        assertThrows(RuntimeException.class, () -> userController.createUser(user1));
 
     }
 
@@ -45,11 +52,11 @@ class FilmorateUserTests {
                 , "", LocalDate.of(2000, 1, 1));
 
 
-        assertThrows(ValidateException.class, () -> userController.createUser(user));
+        assertThrows(RuntimeException.class, () -> userController.createUser(user));
         user.setLogin(null);
         assertThrows(NullPointerException.class, () -> userController.createUser(user));
         user.setLogin("user 2");
-        assertThrows(ValidateException.class, () -> userController.createUser(user));
+        assertThrows(RuntimeException.class, () -> userController.createUser(user));
 
     }
 
@@ -63,7 +70,7 @@ class FilmorateUserTests {
         user.setLogin("user2");
         user.setEmail("user2@example");
 
-        assertThrows(ValidateException.class, () -> userController.createUser(user));
+        assertThrows(RuntimeException.class, () -> userController.createUser(user));
     }
 
     @Test

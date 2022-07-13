@@ -106,15 +106,16 @@ public class DbFilmStorage implements FilmStorage {
     public List<Film> getAll() {
         List<Film> films = new ArrayList<>();
         Mpa mpa = null;
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT f.*,m.* FROM films f JOIN mpa_rating m ON m.id_rate=f.mpa");
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT f.ID_FILM,f.NAME FNAME,f.DESCRIPTION,f.RELEASEDATE,f.DURATION "
+                + ",f.RATE,f.MPA,m.ID_RATE,m.NAME MNAME FROM films f JOIN mpa_rating m ON m.id_rate=f.mpa");
         while (filmRows.next()) {
             Long idFilm = filmRows.getLong("id_film");
             HashSet<Genre> genres = new HashSet<>();
-            mpa = new Mpa(filmRows.getLong("m.id_rate"), filmRows.getString("m.name"));
+            mpa = new Mpa(filmRows.getLong("id_rate"), filmRows.getString("MNAME"));
 
             Film film = new Film(
                     idFilm,
-                    filmRows.getString("name"),
+                    filmRows.getString("FNAME"),
                     filmRows.getString("description"),
                     filmRows.getDate("releasedate").toLocalDate(),
                     filmRows.getInt("duration"),

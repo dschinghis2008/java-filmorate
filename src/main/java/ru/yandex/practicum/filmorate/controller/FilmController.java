@@ -37,7 +37,7 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getFilms() {
-        log.info("запрошены все фильмы");
+        log.info("запрошены все фильмы в количестве {}",filmStorage.getAll().size());
         return filmStorage.getAll();
     }
 
