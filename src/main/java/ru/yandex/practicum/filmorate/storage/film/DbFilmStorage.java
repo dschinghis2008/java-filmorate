@@ -23,10 +23,9 @@ public class DbFilmStorage implements FilmStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private Long getFilmId(){
+    private Long getFilmId() {
         return ++filmId;
     }
-
 
 
     @Override
@@ -49,7 +48,7 @@ public class DbFilmStorage implements FilmStorage {
             if (film.getDuration() <= 0) {
                 throw new ValidateException("длительность фильма должна быть положительной");
             }
-            if(film.getMpa() == null){
+            if (film.getMpa() == null) {
                 throw new ValidateException("отсутствует MPA");
             }
 
@@ -68,17 +67,7 @@ public class DbFilmStorage implements FilmStorage {
             film.getMpa().setName(mpaRow.getString("name"));
             film.setId(mpaRow.getLong("id_film"));
         }
-        /*Map<String, Object> keys = new SimpleJdbcInsert(this.jdbcTemplate)
-                .withTableName("films")
-                .usingColumns("name", "description", "releasedate", "duration", "mpa")
-                .usingGeneratedKeyColumns("id_film")
-                .executeAndReturnKeyHolder(Map.of("name", film.getName(),
-                        "description", film.getDescription(),
-                        "releasedate", film.getReleaseDate(),
-                        "duration", film.getDuration(),
-                        "mpa", film.getMpa().getId()))
-                .getKeys();
-        film.setId((Long) keys.get("id_film"));*/
+
         sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
         jdbcTemplate.update(sql, film.getId());
         try {
@@ -100,7 +89,7 @@ public class DbFilmStorage implements FilmStorage {
         if (film.getId() <= 0 || film.getId() == null) {
             throw new NotFoundException("id должен быть > 0");
         }
-        if(getById(film.getId()) == null){
+        if (getById(film.getId()) == null) {
             throw new NotFoundException("фильм для update не найден");
         }
         String sql = "UPDATE films SET name=?,description=?,releasedate=?,duration=?,rate=?,mpa=? WHERE id_film=?";
@@ -239,7 +228,7 @@ public class DbFilmStorage implements FilmStorage {
         ArrayList<Genre> list = new ArrayList<>();
         SqlRowSet rows = jdbcTemplate.queryForRowSet(
                 "SELECT * FROM GENRES g JOIN FILM_GENRE_LINK fgl on g.ID_GENRE = fgl.ID_GENRE"
-                + " WHERE fgl.ID_FILM=? ORDER BY fgl.ID_GENRE"
+                        + " WHERE fgl.ID_FILM=? ORDER BY fgl.ID_GENRE"
                 , film.getId());
         while (rows.next()) {
             list.add(new Genre(rows.getLong("id_genre"), rows.getString("name")));
