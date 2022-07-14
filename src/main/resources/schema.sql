@@ -13,7 +13,7 @@ create table if not exists USERS
 
 create table if not exists mpa_rating
 (
-    id_rate long auto_increment,
+    id_rate long,
     name varchar2(10),
     constraint MPA_RATING_PK
         primary key (id_rate)
@@ -21,7 +21,7 @@ create table if not exists mpa_rating
 
 create table if not exists films
 (
-    id_film long auto_increment,
+    id_film long ,--auto_increment,
     name varchar2(50) not null,
     description varchar2(200) not null,
     releasedate date,
@@ -34,7 +34,7 @@ create table if not exists films
 
 create table if not exists genres
 (
-    id_genre int auto_increment,
+    id_genre int,
     name varchar2(20),
     constraint GENRES_PK
         primary key (id_genre)

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.NotFoundException;
@@ -16,10 +17,17 @@ import java.util.*;
 public class DbFilmStorage implements FilmStorage {
     private static final LocalDate LOW_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private final JdbcTemplate jdbcTemplate;
+    private Long filmId = 0L;
 
     public DbFilmStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    private Long getFilmId(){
+        return ++filmId;
+    }
+
+
 
     @Override
     public Optional<Film> createFilm(Film film) {
@@ -41,21 +49,36 @@ public class DbFilmStorage implements FilmStorage {
             if (film.getDuration() <= 0) {
                 throw new ValidateException("длительность фильма должна быть положительной");
             }
+            if(film.getMpa() == null){
+                throw new ValidateException("отсутствует MPA");
+            }
+
         } catch (ValidateException e) {
             throw new RuntimeException(e);
         }
-        String sql = "INSERT INTO films(name,description,releasedate,duration,rate,mpa) "
-                + "values(?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+        Long id = getFilmId();
+        String sql = "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
+                + "values(?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql, id, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
                 , film.getRate(), film.getMpa().getId());
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(
                 "SELECT f.id_film id_film,m.name name FROM films f JOIN mpa_rating m ON f.mpa=m.id_rate "
-                        + " WHERE f.name=? and f.releasedate=?", film.getName(), film.getReleaseDate()
-        );
+                        + " WHERE f.id_film=?", id);
         if (mpaRow.next()) {
             film.getMpa().setName(mpaRow.getString("name"));
             film.setId(mpaRow.getLong("id_film"));
         }
+        /*Map<String, Object> keys = new SimpleJdbcInsert(this.jdbcTemplate)
+                .withTableName("films")
+                .usingColumns("name", "description", "releasedate", "duration", "mpa")
+                .usingGeneratedKeyColumns("id_film")
+                .executeAndReturnKeyHolder(Map.of("name", film.getName(),
+                        "description", film.getDescription(),
+                        "releasedate", film.getReleaseDate(),
+                        "duration", film.getDuration(),
+                        "mpa", film.getMpa().getId()))
+                .getKeys();
+        film.setId((Long) keys.get("id_film"));*/
         sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
         jdbcTemplate.update(sql, film.getId());
         try {
@@ -131,6 +154,7 @@ public class DbFilmStorage implements FilmStorage {
     public void deleteFilm(Long id) {
         String sql = "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
         jdbcTemplate.update(sql, id, id);
+
     }
 
     @Override

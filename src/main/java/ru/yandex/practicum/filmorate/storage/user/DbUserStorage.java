@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.IncorrectParameterException;
@@ -8,14 +9,22 @@ import ru.yandex.practicum.filmorate.controller.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
 public class DbUserStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
+
+    private Long userId = 0L;
+
+    private Long getUserId(){
+        return ++userId;
+    }
 
     public DbUserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -61,16 +70,27 @@ public class DbUserStorage implements UserStorage {
         } catch (ValidateException e) {
             throw new RuntimeException(e);
         }
-        String sql = "INSERT INTO users(name,login,email,birthday) values(?,?,?,?)";
-        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
+        Long id = getUserId();
+        String sql = "INSERT INTO users(id_user,name,login,email,birthday) values(?,?,?,?,?)";
+        jdbcTemplate.update(sql, id,user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
         SqlRowSet userRow = jdbcTemplate.queryForRowSet("SELECT U.ID_USER,F.ID_FRIEND FROM USERS U "
                         + "LEFT JOIN FRIENDS F on u.ID_USER = F.ID_FRIEND "
-                        + "WHERE LOGIN=? AND EMAIL=?"
-                , user.getLogin(), user.getEmail());
+                        + "WHERE U.ID_USER=? --LOGIN=? AND EMAIL=?"
+                , id); //user.getLogin(), user.getEmail());
         while (userRow.next()) {
             user.setId(userRow.getLong("id_user"));
             user.addFriend(userRow.getLong("id_friend"));
         }
+        /*Map<String, Object> keys = new SimpleJdbcInsert(this.jdbcTemplate)
+                .withTableName("users")
+                .usingColumns("login", "email", "name", "birthday")
+                .usingGeneratedKeyColumns("id_user")
+                .executeAndReturnKeyHolder(Map.of("login", user.getLogin(),
+                        "email", user.getEmail(),
+                        "name", user.getName(),
+                        "birthday", Date.valueOf(user.getBirthday())))
+                .getKeys();
+        user.setId((Long) keys.get("id_user"));*/
         return Optional.of(user);
     }
 
