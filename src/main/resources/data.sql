@@ -2,7 +2,7 @@ delete from films;
 delete from film_genre_link;
 delete from friends;
 delete from rating;
-delete from USERS;
+delete from users;
 delete from mpa_rating;
 delete from genres;
 
