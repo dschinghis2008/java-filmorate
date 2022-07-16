@@ -17,7 +17,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public Optional<User> createUser(User user) {
-        try {
+
             if (user.getName().equals("") || user.getName() == null) {
                 user.setName(user.getLogin());
             }
@@ -31,9 +31,7 @@ public class InMemoryUserStorage implements UserStorage {
                 throw new ValidateException("дата рождения указывает на будущее время");
             }
 
-        } catch (ValidateException e) {
-            throw new RuntimeException(e);
-        }
+
         user.setId(getNewId());
         users.put(user.getId(), user);
         return Optional.of(user);

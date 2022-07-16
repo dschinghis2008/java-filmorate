@@ -21,7 +21,7 @@ create table if not exists mpa_rating
 
 create table if not exists films
 (
-    id_film long ,--auto_increment,
+    id_film long ,
     name varchar2(50) not null,
     description varchar2(200) not null,
     releasedate date,
@@ -43,7 +43,7 @@ create table if not exists genres
 create table if not exists film_genre_link
 (
     id_genre      long not null references GENRES(ID_GENRE),
-    id_film       long not null references films(id_film) on delete cascade,
+    id_film       long not null references films(id_film),
     constraint FILM_GENRE_LINK_PK
         primary key (id_film,id_genre)
 );

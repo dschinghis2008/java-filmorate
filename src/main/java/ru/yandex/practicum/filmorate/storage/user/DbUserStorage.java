@@ -21,6 +21,12 @@ public class DbUserStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     private Long userId = 0L;
+    private static final String SQL_INS_USERS = "INSERT INTO users(id_user,name,login,email,birthday) values(?,?,?,?,?)";
+    private static final String SQL_UPD_USERS = "UPDATE users SET name=?,login=?,email=?,birthday=? WHERE id_user=?";
+    private static final String SQL_DEL_USERS = "DELETE FROM users WHERE id_user=?";
+    private static final String SQL_DEL_USERS_ALL = "DELETE FROM users";
+    private static final String SQL_INS_FRIENDS = "INSERT INTO friends(id_user,id_friend,status) values(?,?,1)";
+    private static final String SQL_DEL_FRIENDS = "DELETE FROM friends WHERE id_user=? and id_friend=?";
 
     private Long getUserId() {
         return ++userId;
@@ -53,7 +59,7 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public Optional<User> createUser(User user) {
-        try {
+
             if (user.getName().equals("") || user.getName() == null) {
                 user.setName(user.getLogin());
             }
@@ -67,12 +73,9 @@ public class DbUserStorage implements UserStorage {
                 throw new ValidateException("дата рождения указывает на будущее время");
             }
 
-        } catch (ValidateException e) {
-            throw new RuntimeException(e);
-        }
+
         Long id = getUserId();
-        String sql = "INSERT INTO users(id_user,name,login,email,birthday) values(?,?,?,?,?)";
-        jdbcTemplate.update(sql, id, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
+        jdbcTemplate.update(SQL_INS_USERS, id, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday());
         SqlRowSet userRow = jdbcTemplate.queryForRowSet("SELECT U.ID_USER,F.ID_FRIEND FROM USERS U "
                         + "LEFT JOIN FRIENDS F on u.ID_USER = F.ID_FRIEND "
                         + "WHERE U.ID_USER=?"
@@ -90,8 +93,7 @@ public class DbUserStorage implements UserStorage {
         if (user.getId() <= 0 || user.getId() == null) {
             throw new NotFoundException("id должен быть > 0");
         }
-        String sql = "UPDATE users SET name=?,login=?,email=?,birthday=? WHERE id_user=?";
-        jdbcTemplate.update(sql, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getId());
+        jdbcTemplate.update(SQL_UPD_USERS, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getId());
         return Optional.of(user);
     }
 
@@ -114,26 +116,22 @@ public class DbUserStorage implements UserStorage {
 
     @Override
     public void deleteUser(Long id) {
-        String sql = "DELETE FROM users WHERE id_user=?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(SQL_DEL_USERS, id);
     }
 
     @Override
     public void deleteAll() {
-        String sql = "DELETE FROM users";
-        jdbcTemplate.update(sql);
+        jdbcTemplate.update(SQL_DEL_USERS_ALL);
     }
 
     @Override
     public void addFriend(Long id, Long idFriend) {
-        String sql = "INSERT INTO friends(id_user,id_friend,status) values(?,?,1)";
-        jdbcTemplate.update(sql, id, idFriend);
+        jdbcTemplate.update(SQL_INS_FRIENDS, id, idFriend);
     }
 
     @Override
     public void deleteFriend(Long id, Long idFriend) {
-        String sql = "DELETE FROM friends WHERE id_user=? and id_friend=?";
-        jdbcTemplate.update(sql, id, idFriend);
+        jdbcTemplate.update(SQL_DEL_FRIENDS, id, idFriend);
     }
 
     @Override

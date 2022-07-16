@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.NotFoundException;
@@ -19,6 +18,18 @@ public class DbFilmStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private Long filmId = 0L;
 
+    private static final String SQL_INS_FILMS = "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
+            + "values(?,?,?,?,?,?,?)";
+    private static final String SQL_DEL_GENRE_LINK = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+    private static final String SQL_INS_GENRE_LINK = "INSERT INTO FILM_GENRE_LINK(ID_GENRE, ID_FILM) VALUES ( ?,? )";
+    private static final String SQL_UPD_FILM = "UPDATE films SET name=?,description=?,releasedate=?,duration=?,rate=?,mpa=? WHERE id_film=?";
+    private static final String SQL_MERGE_GENRE_LINK = "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
+    private static final String SQL_DEL_FILM = "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+    private static final String SQL_DEL_FILM_ALL = "DELETE FROM FILM_GENRE_LINK; DELETE FROM films";
+    private static final String SQL_INS_RATING = "INSERT INTO rating(id_user,id_film) VALUES(?,?)";
+    private static final String SQL_DEL_RATING = "DELETE FROM rating WHERE id_user=? AND id_film=?";
+
+
     public DbFilmStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -30,35 +41,32 @@ public class DbFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> createFilm(Film film) {
-        try {
-            if (film.getName().isBlank() || film.getName() == null) {
-                throw new ValidateException("пустое наменование фильма");
-            }
-            if (film.getDescription().length() > 200) {
-                throw new ValidateException("размер описания превышает 200 символов");
-            }
 
-            if (film.getDescription().isBlank() || film.getDescription() == null) {
-                throw new ValidateException("пустое описание");
-            }
-
-            if (film.getReleaseDate().isBefore(LOW_RELEASE_DATE)) {
-                throw new ValidateException("дата релиза неверна");
-            }
-            if (film.getDuration() <= 0) {
-                throw new ValidateException("длительность фильма должна быть положительной");
-            }
-            if (film.getMpa() == null) {
-                throw new ValidateException("отсутствует MPA");
-            }
-
-        } catch (ValidateException e) {
-            throw new RuntimeException(e);
+        if (film.getName().isBlank() || film.getName() == null) {
+            throw new ValidateException("пустое наменование фильма");
         }
+        if (film.getDescription().length() > 200) {
+            throw new ValidateException("размер описания превышает 200 символов");
+        }
+
+        if (film.getDescription().isBlank() || film.getDescription() == null) {
+            throw new ValidateException("пустое описание");
+        }
+
+        if (film.getReleaseDate().isBefore(LOW_RELEASE_DATE)) {
+            throw new ValidateException("дата релиза неверна");
+        }
+        if (film.getDuration() <= 0) {
+            throw new ValidateException("длительность фильма должна быть положительной");
+        }
+        if (film.getMpa() == null) {
+            throw new ValidateException("отсутствует MPA");
+        }
+
+
         Long id = getFilmId();
-        String sql = "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
-                + "values(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, id, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+
+        jdbcTemplate.update(SQL_INS_FILMS, id, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
                 , film.getRate(), film.getMpa().getId());
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(
                 "SELECT f.id_film id_film,m.name name FROM films f JOIN mpa_rating m ON f.mpa=m.id_rate "
@@ -68,18 +76,12 @@ public class DbFilmStorage implements FilmStorage {
             film.setId(mpaRow.getLong("id_film"));
         }
 
-        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-        jdbcTemplate.update(sql, film.getId());
-        try {
-            if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-                for (Genre genre : film.getGenres()) {
-                    sql = "INSERT INTO FILM_GENRE_LINK(ID_GENRE, ID_FILM) VALUES ( ?,? )";
-                    jdbcTemplate.update(sql, genre.getId(), film.getId());
-                }
+        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(SQL_MERGE_GENRE_LINK, film.getId(), genre.getId());
             }
-        } catch (RuntimeException e) {
-
         }
+
 
         return Optional.of(film);
     }
@@ -92,23 +94,16 @@ public class DbFilmStorage implements FilmStorage {
         if (getById(film.getId()) == null) {
             throw new NotFoundException("фильм для update не найден");
         }
-        String sql = "UPDATE films SET name=?,description=?,releasedate=?,duration=?,rate=?,mpa=? WHERE id_film=?";
-        jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+        jdbcTemplate.update(SQL_UPD_FILM, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
                 , film.getRate(), film.getMpa().getId(), film.getId());
         film.setMpa(getMpa(film.getMpa().getId()));
-        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-        jdbcTemplate.update(sql, film.getId());
-        sql = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-        jdbcTemplate.update(sql, film.getId());
-        try {
-            if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-                for (Genre genre : film.getGenres()) {
-                    sql = "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
-                    jdbcTemplate.update(sql, film.getId(), genre.getId());
-                }
-                film.setGenres(getGenres(film));
+        jdbcTemplate.update(SQL_DEL_GENRE_LINK, film.getId());
+
+        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(SQL_MERGE_GENRE_LINK, film.getId(), genre.getId());
             }
-        } catch (RuntimeException e) {
+            film.setGenres(getGenres(film));
         }
 
         return Optional.of(film);
@@ -141,15 +136,12 @@ public class DbFilmStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(Long id) {
-        String sql = "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-        jdbcTemplate.update(sql, id, id);
-
+        jdbcTemplate.update(SQL_DEL_FILM, id, id);
     }
 
     @Override
     public void deleteAll() {
-        String sql = "DELETE FROM films;DELETE FROM FILM_GENRE_LINK";
-        jdbcTemplate.update(sql);
+        jdbcTemplate.update(SQL_DEL_FILM_ALL);
     }
 
     @Override
@@ -180,14 +172,12 @@ public class DbFilmStorage implements FilmStorage {
 
     @Override
     public void addLike(Long idUser, Long idFilm) {
-        String sql = "INSERT INTO rating(id_user,id_film) VALUES(?,?)";
-        jdbcTemplate.update(sql, idUser, idFilm);
+        jdbcTemplate.update(SQL_INS_RATING, idUser, idFilm);
     }
 
     @Override
     public void removeLike(Long idUser, Long idFilm) {
-        String sql = "DELETE FROM rating WHERE id_user=? AND id_film=?";
-        jdbcTemplate.update(sql, idUser, idFilm);
+        jdbcTemplate.update(SQL_DEL_RATING, idUser, idFilm);
     }
 
     @Override

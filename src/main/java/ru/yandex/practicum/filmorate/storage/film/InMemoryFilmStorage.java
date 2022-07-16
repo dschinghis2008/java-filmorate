@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.storage.film;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -20,7 +22,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> createFilm(Film film) {
-        try {
+
             if (film.getName().isBlank() || film.getName() == null) {
                 throw new ValidateException("пустое наменование фильма");
             }
@@ -38,9 +40,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             if (film.getDuration() <= 0) {
                 throw new ValidateException("длительность фильма должна быть положительной");
             }
-        } catch (ValidateException e) {
-            throw new RuntimeException(e);
-        }
+
         film.setId(getNewId());
         films.put(film.getId(), film);
         return Optional.of(film);
@@ -95,6 +95,16 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Optional<Film>> getOrderRate(Integer limit) {
+        return null;
+    }
+
+    @Override
+    public Mpa getMpa(Long idMpa) {
+        return null;
+    }
+
+    @Override
+    public TreeSet<Genre> getGenres(Film film) {
         return null;
     }
 }

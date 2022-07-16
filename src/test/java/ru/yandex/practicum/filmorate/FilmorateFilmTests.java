@@ -81,7 +81,7 @@ public class FilmorateFilmTests {
     }
 
     @Test
-    public void filmControllerUpdateEntityTest() throws NullPointerException {
+    public void filmControllerUpdateEntityTest() {
         Film film = new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
                 , 100, 0L);
         film.setMpa(new Mpa(1L,""));
@@ -92,7 +92,6 @@ public class FilmorateFilmTests {
         Film filmUpd = new Film(1L, "Example2", "desc Example2", LocalDate.of(2002, 1, 1)
                 , 100, 0L);
         filmUpd.setMpa(new Mpa(1L,""));
-        filmUpd.setGenres(genres);
 
         filmController.createFilm(film);
 
