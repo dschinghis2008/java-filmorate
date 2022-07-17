@@ -89,12 +89,12 @@ public class FilmorateFilmTests {
         genres.add(new Genre(1L,""));
         film.setGenres(genres);
 
-        Film filmUpd = new Film(1L, "Example2", "desc Example2", LocalDate.of(2002, 1, 1)
+        Film filmUpd = new Film(4L, "Example2", "desc Example2", LocalDate.of(2002, 1, 1)
                 , 100, 0L);
         filmUpd.setMpa(new Mpa(1L,""));
+        filmUpd.setGenres(genres);
 
         filmController.createFilm(film);
-
         filmController.updateFilm(filmUpd);
         Assertions.assertEquals(filmController.getCountFilms(), 1, "ожидается - обновлен 1 фильм");
     }

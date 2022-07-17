@@ -21,8 +21,8 @@ public class DbFilmStorage implements FilmStorage {
     private static final String SQL_INS_FILMS = "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
             + "values(?,?,?,?,?,?,?)";
     private static final String SQL_DEL_GENRE_LINK = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
-    private static final String SQL_INS_GENRE_LINK = "INSERT INTO FILM_GENRE_LINK(ID_GENRE, ID_FILM) VALUES ( ?,? )";
-    private static final String SQL_UPD_FILM = "UPDATE films SET name=?,description=?,releasedate=?,duration=?,rate=?,mpa=? WHERE id_film=?";
+    private static final String SQL_UPD_FILM =
+            "MERGE INTO films (ID_FILM, name, description, releasedate, duration, rate,mpa) KEY (ID_FILM) VALUES (?,?, ?, ?, ?, ?, ?)";
     private static final String SQL_MERGE_GENRE_LINK = "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
     private static final String SQL_DEL_FILM = "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
     private static final String SQL_DEL_FILM_ALL = "DELETE FROM FILM_GENRE_LINK; DELETE FROM films";
@@ -94,10 +94,10 @@ public class DbFilmStorage implements FilmStorage {
         if (getById(film.getId()) == null) {
             throw new NotFoundException("фильм для update не найден");
         }
-        jdbcTemplate.update(SQL_UPD_FILM, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
-                , film.getRate(), film.getMpa().getId(), film.getId());
-        film.setMpa(getMpa(film.getMpa().getId()));
         jdbcTemplate.update(SQL_DEL_GENRE_LINK, film.getId());
+        jdbcTemplate.update(SQL_UPD_FILM, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+                , film.getRate(), film.getMpa().getId());
+        film.setMpa(getMpa(film.getMpa().getId()));
 
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
             for (Genre genre : film.getGenres()) {

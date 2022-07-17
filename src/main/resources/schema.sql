@@ -27,7 +27,7 @@ create table if not exists films
     releasedate date,
     duration int,
 	rate long,
-    mpa long references mpa_rating(id_rate) on delete cascade ,
+    mpa long references mpa_rating(id_rate),
     constraint FILMS_PK
         primary key (id_film)
 );

@@ -1,5 +1,5 @@
-delete from films;
 delete from film_genre_link;
+delete from films;
 delete from friends;
 delete from rating;
 delete from users;
