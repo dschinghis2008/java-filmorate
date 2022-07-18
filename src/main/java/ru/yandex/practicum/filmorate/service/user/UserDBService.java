@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserDBService implements UserService{
+public class UserDBService implements UserService {
 
     private final UserStorage userStorage;
 
@@ -56,7 +56,6 @@ public class UserDBService implements UserService{
         } else {
             throw new NotFoundException("user с id=" + id1 + " или id=" + id2 + " не найден");
         }
-
 
     }
 

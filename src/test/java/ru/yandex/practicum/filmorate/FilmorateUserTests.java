@@ -21,7 +21,7 @@ class FilmorateUserTests {
     private UserController userController;
 
     @BeforeEach
-    public void clearDB(){
+    public void clearDB() {
         //userController.deleteUsers();
     }
 
@@ -99,7 +99,8 @@ class FilmorateUserTests {
         userController.deleteUsers();
         userController.createUser(user);
         userController.createUser(user2);
-        Assertions.assertEquals(userController.getUsers().size(), 2, "ожидается - получили 2 пользователя");
+        Assertions.assertEquals(userController.getUsers().size(), 2
+                , "ожидается - получили 2 пользователя");
     }
 
 

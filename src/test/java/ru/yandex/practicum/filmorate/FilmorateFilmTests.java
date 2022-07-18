@@ -24,17 +24,18 @@ public class FilmorateFilmTests {
     private FilmController filmController;
 
     @BeforeEach
-    public void clearDB(){
+    public void clearDB() {
         filmController.deleteFilms();
     }
 
     @Test
     public void filmControllerValidEntityTest() throws ValidateException {
-        Film film = new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
-                , 100, 0L);
-        film.setMpa(new Mpa(1L,""));
+        Film film =
+                new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
+                        , 100, 0L);
+        film.setMpa(new Mpa(1L, ""));
         TreeSet<Genre> genres = new TreeSet<>();
-        genres.add(new Genre(1L,""));
+        genres.add(new Genre(1L, ""));
         film.setGenres(genres);
         filmController.createFilm(film);
 
@@ -65,16 +66,16 @@ public class FilmorateFilmTests {
 
     @Test
     public void filmControllerInvalidDateReleaseTest() {
-        Film film = new Film(1L, "Example", "desc Example", LocalDate.of(1895, 12, 27)
+        Film film = new Film(1L, "Example", "desc Example"
+                , LocalDate.of(1895, 12, 27)
                 , 100, 0L);
         assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
     }
 
     @Test
     public void filmControllerInvalidDurationTest() {
-        Film film = new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
-                , 100, 0L);
-
+        Film film = new Film(1L, "Example", "desc Example"
+                , LocalDate.of(2000, 1, 1), 100, 0L);
         assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
         film.setDuration(0);
         assertThrows(RuntimeException.class, () -> filmController.createFilm(film));
@@ -82,16 +83,17 @@ public class FilmorateFilmTests {
 
     @Test
     public void filmControllerUpdateEntityTest() {
-        Film film = new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
+        Film film = new Film(1L, "Example", "desc Example"
+                , LocalDate.of(2000, 1, 1)
                 , 100, 0L);
-        film.setMpa(new Mpa(1L,""));
+        film.setMpa(new Mpa(1L, ""));
         TreeSet<Genre> genres = new TreeSet<>();
-        genres.add(new Genre(1L,""));
+        genres.add(new Genre(1L, ""));
         film.setGenres(genres);
 
-        Film filmUpd = new Film(4L, "Example2", "desc Example2", LocalDate.of(2002, 1, 1)
-                , 100, 0L);
-        filmUpd.setMpa(new Mpa(1L,""));
+        Film filmUpd = new Film(4L, "Example2", "desc Example2"
+                , LocalDate.of(2002, 1, 1), 100, 0L);
+        filmUpd.setMpa(new Mpa(1L, ""));
         filmUpd.setGenres(genres);
 
         filmController.createFilm(film);
@@ -101,16 +103,16 @@ public class FilmorateFilmTests {
 
     @Test
     public void filmControllerGetFilmsTest() throws NullPointerException {
-        Film film = new Film(1L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
-                , 100, 0L);
+        Film film = new Film(1L, "Example", "desc Example",
+                LocalDate.of(2000, 1, 1), 100, 0L);
 
-        Film film2 = new Film(2L, "Example", "desc Example", LocalDate.of(2000, 1, 1)
-                , 100, 0L);
-        film.setMpa(new Mpa(1L,""));
+        Film film2 = new Film(2L, "Example", "desc Example"
+                , LocalDate.of(2000, 1, 1), 100, 0L);
+        film.setMpa(new Mpa(1L, ""));
         TreeSet<Genre> genres = new TreeSet<>();
-        genres.add(new Genre(1L,""));
+        genres.add(new Genre(1L, ""));
         film.setGenres(genres);
-        film2.setMpa(new Mpa(1L,""));
+        film2.setMpa(new Mpa(1L, ""));
         film2.setGenres(genres);
 
         filmController.createFilm(film);

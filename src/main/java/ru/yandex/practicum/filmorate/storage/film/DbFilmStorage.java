@@ -18,13 +18,17 @@ public class DbFilmStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private Long filmId = 0L;
 
-    private static final String SQL_INS_FILMS = "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
-            + "values(?,?,?,?,?,?,?)";
+    private static final String SQL_INS_FILMS =
+            "INSERT INTO films(id_film,name,description,releasedate,duration,rate,mpa) "
+                    + "values(?,?,?,?,?,?,?)";
     private static final String SQL_DEL_GENRE_LINK = "DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
     private static final String SQL_UPD_FILM =
-            "MERGE INTO films (ID_FILM, name, description, releasedate, duration, rate,mpa) KEY (ID_FILM) VALUES (?,?, ?, ?, ?, ?, ?)";
-    private static final String SQL_MERGE_GENRE_LINK = "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
-    private static final String SQL_DEL_FILM = "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
+            "MERGE INTO films (ID_FILM, name, description, releasedate, duration, rate,mpa) KEY (ID_FILM) "
+                    + "VALUES (?,?, ?, ?, ?, ?, ?)";
+    private static final String SQL_MERGE_GENRE_LINK =
+            "MERGE INTO FILM_GENRE_LINK (ID_FILM, ID_GENRE) KEY (ID_FILM, ID_GENRE) VALUES (?, ?)";
+    private static final String SQL_DEL_FILM =
+            "DELETE FROM films WHERE id_film=?;DELETE FROM FILM_GENRE_LINK WHERE ID_FILM=?";
     private static final String SQL_DEL_FILM_ALL = "DELETE FROM FILM_GENRE_LINK; DELETE FROM films";
     private static final String SQL_INS_RATING = "INSERT INTO rating(id_user,id_film) VALUES(?,?)";
     private static final String SQL_DEL_RATING = "DELETE FROM rating WHERE id_user=? AND id_film=?";
@@ -66,7 +70,8 @@ public class DbFilmStorage implements FilmStorage {
 
         Long id = getFilmId();
 
-        jdbcTemplate.update(SQL_INS_FILMS, id, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+        jdbcTemplate.update(SQL_INS_FILMS, id, film.getName(), film.getDescription(), film.getReleaseDate()
+                , film.getDuration()
                 , film.getRate(), film.getMpa().getId());
         SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(
                 "SELECT f.id_film id_film,m.name name FROM films f JOIN mpa_rating m ON f.mpa=m.id_rate "
@@ -95,7 +100,8 @@ public class DbFilmStorage implements FilmStorage {
             throw new NotFoundException("фильм для update не найден");
         }
         jdbcTemplate.update(SQL_DEL_GENRE_LINK, film.getId());
-        jdbcTemplate.update(SQL_UPD_FILM, film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration()
+        jdbcTemplate.update(SQL_UPD_FILM, film.getId(), film.getName(), film.getDescription()
+                , film.getReleaseDate(), film.getDuration()
                 , film.getRate(), film.getMpa().getId());
         film.setMpa(getMpa(film.getMpa().getId()));
 
@@ -113,8 +119,9 @@ public class DbFilmStorage implements FilmStorage {
     public List<Film> getAll() {
         List<Film> films = new ArrayList<>();
         Mpa mpa = null;
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet("SELECT f.ID_FILM,f.NAME FNAME,f.DESCRIPTION,f.RELEASEDATE,f.DURATION "
-                + ",f.RATE,f.MPA,m.ID_RATE,m.NAME MNAME FROM films f JOIN mpa_rating m ON m.id_rate=f.mpa");
+        SqlRowSet filmRows =
+                jdbcTemplate.queryForRowSet("SELECT f.ID_FILM,f.NAME FNAME,f.DESCRIPTION,f.RELEASEDATE,f.DURATION "
+                        + ",f.RATE,f.MPA,m.ID_RATE,m.NAME MNAME FROM films f JOIN mpa_rating m ON m.id_rate=f.mpa");
         while (filmRows.next()) {
             Long idFilm = filmRows.getLong("id_film");
             HashSet<Genre> genres = new HashSet<>();

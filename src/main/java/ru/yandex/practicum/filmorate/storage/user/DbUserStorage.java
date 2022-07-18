@@ -21,7 +21,8 @@ public class DbUserStorage implements UserStorage {
     private final JdbcTemplate jdbcTemplate;
 
     private Long userId = 0L;
-    private static final String SQL_INS_USERS = "INSERT INTO users(id_user,name,login,email,birthday) values(?,?,?,?,?)";
+    private static final String SQL_INS_USERS =
+            "INSERT INTO users(id_user,name,login,email,birthday) values(?,?,?,?,?)";
     private static final String SQL_UPD_USERS = "UPDATE users SET name=?,login=?,email=?,birthday=? WHERE id_user=?";
     private static final String SQL_DEL_USERS = "DELETE FROM users WHERE id_user=?";
     private static final String SQL_DEL_USERS_ALL = "DELETE FROM users";
@@ -60,18 +61,18 @@ public class DbUserStorage implements UserStorage {
     @Override
     public Optional<User> createUser(User user) {
 
-            if (user.getName().equals("") || user.getName() == null) {
-                user.setName(user.getLogin());
-            }
-            if (!user.getEmail().contains("@") || user.getEmail().isBlank() || user.getEmail() == null) {
-                throw new ValidateException("неправильный формат email или пустой email");
-            }
-            if (user.getLogin().contains(" ") || user.getLogin().isBlank() || user.getLogin() == null) {
-                throw new ValidateException("пустой логин или содержит пробелы");
-            }
-            if (user.getBirthday().isAfter(LocalDate.now())) {
-                throw new ValidateException("дата рождения указывает на будущее время");
-            }
+        if (user.getName().equals("") || user.getName() == null) {
+            user.setName(user.getLogin());
+        }
+        if (!user.getEmail().contains("@") || user.getEmail().isBlank() || user.getEmail() == null) {
+            throw new ValidateException("неправильный формат email или пустой email");
+        }
+        if (user.getLogin().contains(" ") || user.getLogin().isBlank() || user.getLogin() == null) {
+            throw new ValidateException("пустой логин или содержит пробелы");
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            throw new ValidateException("дата рождения указывает на будущее время");
+        }
 
 
         Long id = getUserId();
@@ -93,7 +94,8 @@ public class DbUserStorage implements UserStorage {
         if (user.getId() <= 0 || user.getId() == null) {
             throw new NotFoundException("id должен быть > 0");
         }
-        jdbcTemplate.update(SQL_UPD_USERS, user.getName(), user.getLogin(), user.getEmail(), user.getBirthday(), user.getId());
+        jdbcTemplate.update(SQL_UPD_USERS, user.getName(), user.getLogin(), user.getEmail()
+                , user.getBirthday(), user.getId());
         return Optional.of(user);
     }
 

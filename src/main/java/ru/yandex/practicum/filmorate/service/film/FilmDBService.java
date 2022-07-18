@@ -13,11 +13,12 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.*;
 
 @Service
-public class FilmDBService implements FilmService{
+public class FilmDBService implements FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-    public FilmDBService(@Qualifier("dbFilmStorage") FilmStorage filmStorage, @Qualifier("dbUserStorage") UserStorage userStorage) {
+    public FilmDBService(@Qualifier("dbFilmStorage") FilmStorage filmStorage
+            , @Qualifier("dbUserStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
     }
